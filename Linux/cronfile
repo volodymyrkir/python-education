@@ -1,0 +1,4 @@
+
+25 * * * * /home/volodymyr/Документы/python-education/Linux/datetime.sh
+25 17 * * * /home/volodymyr/Документы/python-education/Linux/weather.sh
+ 
