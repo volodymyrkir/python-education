@@ -1,13 +1,16 @@
 """This module is used to work with different vehicles"""
 from abc import ABC, abstractmethod
+from descriptor import Descriptor
 
 
 class Engine(ABC):
     """Abstract class, that defines some methods for subclasses"""
+    _power = Descriptor()
+    _fuel_use = Descriptor()  # Для внешнего взаимодействия используются атрибуты,регулируемые дескриптором
 
     def __init__(self, power, fuel_use):
         """Magical method that initiates an Engine part of subclasses based on Engine"""
-        self._power = power
+        self._power = power  # Для внутреннего взаимодействия (в сравнениях) используются протектед поля
         self._fuel_use = fuel_use
 
     def __lt__(self, other):
@@ -27,6 +30,9 @@ class Engine(ABC):
 class Transport(ABC):
     """Abstract class for any transport"""
     vehicles = 0
+    _speed_kmh = Descriptor()
+    seats = Descriptor()
+    weight = Descriptor()
 
     def __init__(self, speed_kmh: float, seats: int, weight: float):
         """Magical method that initiates the Transport part of subclasses"""
@@ -56,17 +62,6 @@ class Transport(ABC):
     def __pos__(self):
         """Magical method that overloads unary + symbol to increment seats in vehicle"""
         self.seats += 1
-
-    @property
-    def speed(self):
-        """Property that shows the speed of vehicle"""
-        print(f"Speed of this vehicle is {self._speed_kmh} kms per hour")
-
-    @speed.setter
-    def speed(self, new):
-        """property setter which sets new value to protected field and reflects to console"""
-        self._speed_kmh = new
-        print(f"New speed of this vehicle is {self._speed_kmh} kms per hour")
 
     @abstractmethod
     def drive(self):
@@ -147,7 +142,7 @@ class Bus(Transport, Engine):
 
 
 class Bicycle(Transport):
-    """Class, that represents bicycle as subclass of Transport and Engine"""
+    """Class, that represents bicycle as subclass of Transport"""
     bicycles = 0
 
     def __init__(self, speed_kmh: float, weight: float, type: str, seats: int = 1):
@@ -172,7 +167,7 @@ class Bicycle(Transport):
 
 
 class Wagon(Transport):
-    """Method, that shows amount of wagons in project"""
+    """Class, that represents wagon as subclass of Transport"""
     wagons = 0
 
     def __init__(self, weight: float, horses: int, seats: int = 1):
@@ -205,10 +200,11 @@ if __name__ == "__main__":
     bi = Bicycle(9, 7, "Mountain")
     w = Wagon(90, 3)
     -w
-    w.speed
+    w._speed_km = 3
     print(bi > w)
-    c1 = Car(-5, 3, 0, "Kia", 290, 0.6)
+    c1 = Car(-5, 3, 0, "Kia", -19, 0.6)
     +c1
+    c1._speed_kmh = -5
     print(c1.seats)
     print(bool(c1))
     Transport.is_fast(61)
