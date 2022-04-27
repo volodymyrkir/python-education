@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 requests = "==2.25.1"
 flask = "*"
+pytest = "*"
+pytest-freezegun = "*"
 
 [dev-packages]
 
