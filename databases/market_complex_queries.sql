@@ -62,7 +62,6 @@ SELECT first_name,email,city FROM users ORDER BY city, first_name ASC;
 /* TASK 3:
 Вывести наименование группы товаров, общее количество по группе товаров в порядке убывания количества
 */
-
 SELECT categories.category_title,count(products.product_id) FROM  categories
 JOIN products ON products.category_id=categories.category_id GROUP BY categories.category_title
 ORDER BY COUNT(products.product_id) DESC;
@@ -77,7 +76,6 @@ ORDER BY COUNT(products.product_id) DESC;
 6. Вывести топ 5 юзеров, которые сделали больше всего заказов (кол-во заказов).
 7. Вывести топ 5 юзеров, которые создали корзины, но так и не сделали заказы.
  */
-
 SELECT product_id,product_title,product_description,in_stock,price,slug,category_id
 FROM PRODUCTS LEFT OUTER JOIN cart_product cp ON products.product_id = cp.products_product_id
 WHERE cp.products_product_id IS NULL;
