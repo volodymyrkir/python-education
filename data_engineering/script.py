@@ -51,8 +51,8 @@ def translate_columns(unprepared_data):
 
 def get_data_concatenated(s3_connection, bucket_name):
     """returns concatenated into 1 csv(table) files from bucket"""
-    return pd.concat([pd.read_csv(s3_client.get_object(Bucket=bucket, Key=k).get("Body"))
-                      for k in get_s3_keys(s3_client, bucket)], ignore_index=True)
+    return pd.concat([pd.read_csv(s3_connection.get_object(Bucket=bucket_name, Key=k).get("Body"))
+                      for k in get_s3_keys(s3_connection, bucket_name)], ignore_index=True)
 
 
 def change_date_format(unprepared_frame):
@@ -60,10 +60,14 @@ def change_date_format(unprepared_frame):
     unprepared_frame['date'] = pd.to_datetime(unprepared_frame['date'], format='%Y-%m-%d %H:%M:%S')
 
 
-s3_client = connect_to_s3()
-bucket = 'covid_ita'
+def main():
+    s3_client = connect_to_s3()
+    bucket = 'covid_ita'
+    data = get_data_concatenated(s3_client,bucket)
+    translate_columns(data)
+    change_date_format(data)
+    data.to_sql('covid_ita', con=connect_to_postgres(), if_exists='replace', index=False)
 
-data = get_data_concatenated()
-translate_columns(data)
-change_date_format(data)
-data.to_sql('covid_ita', con=connect_to_postgres(), if_exists='replace', index=False)
+
+if __name__ == "__main__":
+    main()
