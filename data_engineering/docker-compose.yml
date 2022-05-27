@@ -20,5 +20,7 @@ services:
             MINIO_ROOT_PASSWORD: root_password
         command: minio server /data --console-address ":9001"
 
-    # data_service:
-    #   - ...
+    data_service:
+        build: .
+        ports:
+            - "8000:5000"
