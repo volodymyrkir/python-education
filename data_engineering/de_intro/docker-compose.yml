@@ -21,6 +21,6 @@ services:
         command: minio server /data --console-address ":9001"
 
     data_service:
-        build: .
+        build: ..
         ports:
             - "8000:5000"
