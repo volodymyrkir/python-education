@@ -7,7 +7,7 @@ from data_engineering.pyspark_tasks.task_2 import replace_null, get_top10_catego
 
 
 @pytest.fixture()
-def test_ratings_df(spark_session):
+def ratings_df(spark_session):
     return spark_session.createDataFrame([
         Row(tconst=1, numVotes=100001, averageRating=9.3),
         Row(tconst=2, numVotes=400000, averageRating=9.9),
@@ -30,7 +30,7 @@ def test_replace_null(spark_session):
     assert dfs_equal(actual_df, expected_df)
 
 
-def test_get_top10_category(spark_session, test_ratings_df):
+def test_get_top10_category(spark_session, ratings_df):
     test_basics_df = spark_session.createDataFrame([
         Row(tconst=1, titleType='movie',
             primaryTitle='first_movie', genres='horror', startYear=2003),
@@ -43,7 +43,7 @@ def test_get_top10_category(spark_session, test_ratings_df):
         Row(tconst=5, titleType='movie',
             primaryTitle='fourth_movie', genres='sitcom', startYear=2020)
     ])
-    actual_df = get_top10_category(test_basics_df, test_ratings_df)
+    actual_df = get_top10_category(test_basics_df, ratings_df)
     schema_df = t.StructType()
     schema_df.add("tconst", t.LongType(), True)
     schema_df.add("primaryTitle", "string", True)

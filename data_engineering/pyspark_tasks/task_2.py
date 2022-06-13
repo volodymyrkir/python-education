@@ -33,7 +33,7 @@ def main():
                      .config(conf=SparkConf())
                      .getOrCreate())
 
-    basics_df_main = spark_session.read.csv(path='input/title.basics.tsv.gz', sep='\t', header=True)
+    basics_df_main = spark_session.read.csv(path='input/title.basics.tsv.gz', sep='\t', header=True, nullValue=None)
     basics_df_main = basics_df_main.filter(basics_df_main.titleType == 'movie')
     basics_df_main = basics_df_main.withColumn("genres", replace_null(f.col('genres'), '\\N'))
 
@@ -44,8 +44,9 @@ def main():
     return res
 
 
-top_10_category = main()
+
 if __name__ == "__main__":
+    top_10_category = main()
     (top_10_category.coalesce(1)
      .write.format("com.databricks.spark.csv")
      .option("header", "true")

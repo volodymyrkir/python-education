@@ -36,9 +36,8 @@ def main():
     return actors_squad
 
 
-actors_squad_df = main()
-
 if __name__ == "__main__":
+    actors_squad_df = main()
     (actors_squad_df.coalesce(1)
      .write.format("com.databricks.spark.csv")
      .option("header", "true")

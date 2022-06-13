@@ -44,9 +44,9 @@ def main():
     return res
 
 
-top_10_decade = main()
 
 if __name__ == "__main__":
+    top_10_decade = main()
     (top_10_decade.coalesce(1)
      .write.format("com.databricks.spark.csv")
      .option("header", "true")

@@ -65,9 +65,8 @@ def main():
     return movies_director_names
 
 
-best_movies_directors = main()
-
 if __name__ == "__main__":
+    best_movies_directors = main()
     (best_movies_directors.coalesce(1)
      .write.format("com.databricks.spark.csv")
      .option("header", "true")

@@ -5,7 +5,7 @@ from data_engineering.pyspark_tasks.task_1 import get_best_alltime, get_best_60t
 
 
 @pytest.fixture()
-def test_ratings_df(spark_session):
+def ratings_df(spark_session):
     return spark_session.createDataFrame([
         Row(tconst=1, numVotes=100001, averageRating=9.3),
         Row(tconst=2, numVotes=400000, averageRating=9.9),
@@ -15,8 +15,8 @@ def test_ratings_df(spark_session):
     ])
 
 
-def test_get_best_alltime(spark_session,test_ratings_df):
-    test_basics_df = spark_session.createDataFrame([
+def test_get_best_alltime(spark_session,ratings_df):
+    basics_df = spark_session.createDataFrame([
         Row(tconst=1, titleType='movie',
             primaryTitle='first_movie', startYear=2003),
         Row(tconst=2, titleType='series',
@@ -29,7 +29,7 @@ def test_get_best_alltime(spark_session,test_ratings_df):
             primaryTitle='fourth_movie', startYear=2020)
     ])
 
-    actual_df = get_best_alltime(test_basics_df, test_ratings_df)
+    actual_df = get_best_alltime(basics_df, ratings_df)
 
     expected_df = spark_session.createDataFrame([
         Row(tconst=1, primaryTitle='first_movie', numVotes=100001, averageRating=9.3, startYear=2003),
@@ -40,8 +40,8 @@ def test_get_best_alltime(spark_session,test_ratings_df):
     assert dfs_equal(actual=actual_df, expected=expected_df)
 
 
-def test_get_best_60th(spark_session,test_ratings_df):
-    test_basics_df = spark_session.createDataFrame([
+def test_get_best_60th(spark_session,ratings_df):
+    basics_df = spark_session.createDataFrame([
         Row(tconst=1, titleType='movie',
             primaryTitle='first_movie', startYear=1969),
         Row(tconst=2, titleType='series',
@@ -54,7 +54,7 @@ def test_get_best_60th(spark_session,test_ratings_df):
             primaryTitle='fourth_movie', startYear=2020)
     ])
 
-    actual_df = get_best_60th(test_basics_df, test_ratings_df)
+    actual_df = get_best_60th(basics_df, ratings_df)
 
     expected_df = spark_session.createDataFrame([
         Row(tconst=1, primaryTitle='first_movie', numVotes=100001, averageRating=9.3, startYear=1969),
