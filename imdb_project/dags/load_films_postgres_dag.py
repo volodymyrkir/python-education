@@ -1,10 +1,11 @@
 """This module serves for loading data from minio to postgres db"""
 from datetime import datetime, timedelta
-
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.sensors.external_task_sensor import ExternalTaskSensor
 from spark_jobs.load_daily_films_postgres import fetch_minio_push_postgres, clear_data_json, get_minio_connection
+
+
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,

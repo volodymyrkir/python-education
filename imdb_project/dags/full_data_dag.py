@@ -1,9 +1,10 @@
 """This module serves to load last 3 month`s tmdb data to minio"""
 from datetime import datetime, timedelta
-
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from python_jobs.load_data_demand import push_all_movies_minio_job
+
+
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,

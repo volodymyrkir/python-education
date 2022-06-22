@@ -6,4 +6,3 @@ apache-airflow
 SQLAlchemy
 sqlalchemy-utils
 python-dateutil
-python-dotenv

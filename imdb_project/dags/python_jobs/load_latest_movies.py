@@ -1,8 +1,6 @@
 """This module serves for saving latest movies of previous day to minio storage"""
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
-
 from .load_data_demand import get_json_set, push_json_minio
 
 

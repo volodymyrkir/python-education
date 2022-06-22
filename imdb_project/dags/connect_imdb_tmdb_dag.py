@@ -4,6 +4,8 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.sensors.external_task_sensor import ExternalTaskSensor
 from spark_jobs.join_imdb_tmdb_data import join_imdb_tmdb_data
+
+
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,

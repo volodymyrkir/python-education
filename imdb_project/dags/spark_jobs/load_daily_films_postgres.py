@@ -1,20 +1,20 @@
 """this module fetches json data from minio and pushes it to postgres db(also can clear raw data)"""
 import os
+import json
 from functools import reduce
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as f
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists
-from dotenv import load_dotenv
 import boto3
 
-load_dotenv()
-MINIO_ROOT_USER = os.getenv('MINIO_ROOT_USER')
-MINIO_ROOT_PASSWORD = os.getenv('MINIO_ROOT_PASSWORD')
-POSTGRES_USER = os.getenv('POSTGRES_USER')
-POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
-USER_PG_DB = os.getenv('USER_PG_DB')
+
+MINIO_ROOT_USER = os.environ.get('MINIO_ROOT_USER')
+MINIO_ROOT_PASSWORD = os.environ.get('MINIO_ROOT_PASSWORD')
+POSTGRES_USER = os.environ.get('POSTGRES_USER')
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+USER_PG_DB = os.environ.get('USER_PG_DB')
 
 
 def get_spark_connection(app_name):
@@ -65,7 +65,12 @@ def fetch_json_files(s3, bucket_name: str = "raw-data"):
     list_of_jsons = []  # must be one file according to same schedule interval, but who knows :)
     for json_object in json_bucket.objects.all():
         if json_object.key.endswith('.json'):
-            list_of_jsons.append(json_object.get()['Body'].read().decode('utf-8'))
+            unprepared_json = json_object.get()['Body'].read().decode('utf-8')
+            temporary_json = (json.loads(unprepared_json))
+            for film in temporary_json:
+                del film['belongs_to_collection']
+            val = json.dumps(temporary_json, separators=(',', ':'))
+            list_of_jsons.append(val)
     return list_of_jsons
 
 

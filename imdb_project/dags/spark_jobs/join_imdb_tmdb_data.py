@@ -1,14 +1,12 @@
 """This module joins tmdb data from postgres db and imdb data from minio"""
 import os
 import pandas as pd
-from dotenv import load_dotenv
 from .load_daily_films_postgres import get_minio_connection, connect_to_postgres_db
 
-load_dotenv()
 
-POSTGRES_USER = os.getenv('POSTGRES_USER')
-POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
-USER_PG_DB = os.getenv('USER_PG_DB')
+POSTGRES_USER = os.environ.get('POSTGRES_USER')
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+USER_PG_DB = os.environ.get('USER_PG_DB')
 
 
 def get_title_basics_dataframe(bucket_name, s3):

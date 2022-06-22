@@ -4,14 +4,15 @@ import json
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from requests.structures import CaseInsensitiveDict
-from dotenv import load_dotenv
 import requests
 import boto3
 
-load_dotenv()
-MINIO_ROOT_USER = os.getenv('MINIO_ROOT_USER')
-MINIO_ROOT_PASSWORD = os.getenv('MINIO_ROOT_PASSWORD')
-API_KEY = 'a76a378f657bde880c649956809cb6c6'
+
+MINIO_ROOT_USER = os.environ.get('MINIO_ROOT_USER')
+MINIO_ROOT_PASSWORD = os.environ.get('MINIO_ROOT_PASSWORD')
+API_KEY = os.environ.get('API_KEY')
+
+
 session = boto3.session.Session()
 s3 = session.resource('s3',
                       endpoint_url='http://s3:9000',
