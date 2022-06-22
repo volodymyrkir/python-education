@@ -22,5 +22,7 @@ with DAG("push_movies_3_month",
          catchup=False
          ) as dag:
     task1 = PythonOperator(
-        task_id="push_full_movies_minio", python_callable=push_all_movies_minio_job
+        task_id="push_full_movies_minio",
+        python_callable=push_all_movies_minio_job,
+        provide_context=True
     )

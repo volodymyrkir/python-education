@@ -7,11 +7,9 @@ from requests.structures import CaseInsensitiveDict
 import requests
 import boto3
 
-
 MINIO_ROOT_USER = os.environ.get('MINIO_ROOT_USER')
 MINIO_ROOT_PASSWORD = os.environ.get('MINIO_ROOT_PASSWORD')
 API_KEY = os.environ.get('API_KEY')
-
 
 session = boto3.session.Session()
 s3 = session.resource('s3',
@@ -69,10 +67,19 @@ def push_json_minio(bucket_name, json_object):
     )
 
 
-def push_all_movies_minio_job():
+# {"period_start":"2022/06/20","period_stop":"2022/06/22"}
+def push_all_movies_minio_job(**kwargs):
     """Pushes collected from api jsons to minio storage"""
-    current_date = datetime.now().strftime('%Y-%m-%d')
-    three_month_back = (datetime.now() - relativedelta(months=3)).strftime('%Y-%m-%d')
-    json_object = get_json_set(left_border=three_month_back, right_border=current_date)
+    try:
+        period_start = kwargs.get('dag_run').conf['period_start']
+    except KeyError:
+        period_start = str((datetime.now() - relativedelta(months=3)).date())
+    try:
+        period_stop = kwargs.get('dag_run').conf['period_stop']
+    except KeyError:
+        period_stop = str(datetime.now().date())
+    some_date_ahead = datetime.strptime(period_stop, '%Y-%m-%d').date()
+    some_date_back = datetime.strptime(period_start, '%Y-%m-%d').date()
+    json_object = get_json_set(left_border=some_date_back, right_border=some_date_ahead)
     requests_session.close()
     push_json_minio('raw-data', json_object)

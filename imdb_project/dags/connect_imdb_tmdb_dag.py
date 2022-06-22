@@ -17,7 +17,7 @@ default_args = {
     "retry_delay": timedelta(minutes=1)
 }
 
-with DAG("connect_database_dat",
+with DAG("connect_database_dag",
          default_args=default_args,
          schedule_interval='0 1 * * *',
          catchup=False) as dag_join:
