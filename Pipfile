@@ -18,6 +18,8 @@ apache-airflow = "*"
 minio = "*"
 apache-airflow-backport-providers-amazon = "*"
 pyarrow = "==8.0.0"
+sqlalchemy-utils = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

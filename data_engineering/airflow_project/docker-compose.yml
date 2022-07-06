@@ -1,0 +1,75 @@
+version: "3.3"
+services:
+    airflow-master:
+        build:
+            context: .
+        ports:
+            - "8000:8000"
+            - "5555:5555"
+        env_file:
+            - .env
+        volumes:
+            - ./dags:/home/airflow/dags
+            - ./spark_jobs:/home/airflow/spark_jobs
+        depends_on:
+            - database
+            - redis
+
+    airflow-worker:
+        build:
+            context: .
+        entrypoint: airflow celery worker
+        env_file:
+            - .env
+        volumes:
+            - ./dags:/home/airflow/dags
+            - ./spark_jobs:/home/airflow/spark_jobs
+        depends_on:
+            - airflow-master
+
+    database:
+        image: postgres:10
+        ports:
+            - "5432:5432"
+        env_file:
+            - .env
+
+    redis:
+        image: redis:6-alpine
+        ports:
+            - "6379:6379"
+
+    s3:
+        image: minio/minio
+        ports:
+            - "9000:9000"
+            - "9001:9001"
+        volumes:
+            - ./dags/storage:/data
+        env_file:
+            - .env
+        command: minio server --console-address :9001 /data
+
+    spark-master:
+        image: bitnami/spark:3.2.0
+        hostname: spark-master
+        ports:
+            - "8080:8080"
+            - "7077:7077"
+        environment:
+            - SPARK_MODE=master
+
+    spark-worker:
+        image: bitnami/spark:3.2.0
+        depends_on:
+            - spark-master
+        ports:
+            - "8081:8081"
+        environment:
+            - SPARK_MODE=worker
+            - SPARK_MASTER=spark://spark-master:7077
+
+volumes:
+    dags:
+    spark_jobs:
+    storage:
